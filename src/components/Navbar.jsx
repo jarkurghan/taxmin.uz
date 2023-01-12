@@ -112,6 +112,9 @@ export default function PrimarySearchAppBar() {
             <NavLink className="nav" to="/matches">
               <MenuItem>Matches</MenuItem>
             </NavLink>
+            <NavLink className="nav" to="/turnir-jadvali">
+              <MenuItem>Turnir Jadvali</MenuItem>
+            </NavLink>
           </div>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
