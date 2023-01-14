@@ -4,7 +4,8 @@
     box-sizing: border-box;
 }
 
-.table_div{
-    height: 400px !important;
-    overflow-y: auto;
+@media(max-width: 400px){
+    #tur_select{
+        width: 100% !important;
+    }
 }

@@ -5,11 +5,12 @@ import './App.css'
 import MatchesPage from './pages/MatchesPage'
 import TurnirJadvali from './pages/TurnirJadvali'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import UnstyledPaginationIntroduction from './components/Pagination'
 
 const App = () => {
   const navigate = useNavigate();
   useEffect(()=>{
-    navigate('/home')
+    // navigate('/home')
   },[])
   return (
     <div>
