@@ -170,15 +170,11 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
         )}
       </div>
 
-      {prediction.points !== null && (
-        <>
-          <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
-          <CommentSection
-            predictionId={prediction.id}
-            initialCount={prediction.comments?.length ?? 0}
-          />
-        </>
-      )}
+      <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
+      <CommentSection
+        predictionId={prediction.id}
+        initialCount={prediction.comments?.length ?? 0}
+      />
     </div>
   );
 }
