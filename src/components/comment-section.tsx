@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { commentsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { getUserDisplayName, formatRelativeTime, cn } from "@/lib/utils";
+import { getUserDisplayName, formatAbsoluteTime, cn } from "@/lib/utils";
 import type { Comment } from "@/types";
 
 interface CommentSectionProps {
@@ -245,7 +245,7 @@ function CommentItem({ comment, predictionId, onUpdate, onDelete, onReply, canRe
           <span className="text-xs font-semibold text-zinc-300">
             {getUserDisplayName(comment.user)}
           </span>
-          <span className="text-[10px] text-zinc-700">{formatRelativeTime(comment.createdAt)}</span>
+          <span className="text-[10px] text-zinc-700">{formatAbsoluteTime(comment.createdAt)}</span>
           {isEdited && <span className="text-[10px] text-zinc-700">(tahrirlangan)</span>}
         </div>
 

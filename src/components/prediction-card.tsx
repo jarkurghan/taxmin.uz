@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { reactionsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { getUserDisplayName, formatRelativeTime, getPointsLabel, cn } from "@/lib/utils";
+import { getUserDisplayName, formatAbsoluteTime, getPointsLabel, cn } from "@/lib/utils";
 import { CommentSection } from "@/components/comment-section";
 import type { Prediction, Reaction } from "@/types";
 
@@ -87,7 +87,7 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
             <p className="text-sm font-semibold text-zinc-200 truncate">
               {prediction.user ? getUserDisplayName(prediction.user) : "Foydalanuvchi"}
             </p>
-            <p className="text-xs text-zinc-600">{formatRelativeTime(prediction.createdAt)}</p>
+            <p className="text-xs text-zinc-600">{formatAbsoluteTime(prediction.createdAt)}</p>
           </div>
         </Link>
 

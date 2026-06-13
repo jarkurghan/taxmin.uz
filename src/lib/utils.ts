@@ -20,6 +20,17 @@ export function formatRelativeTime(date: string | Date): string {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: uz });
 }
 
+export function formatAbsoluteTime(date: string | Date): string {
+  const d = new Date(date);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const isThisYear = d.getFullYear() === now.getFullYear();
+
+  if (isToday) return format(d, "HH:mm");
+  if (isThisYear) return format(d, "d-MMM, HH:mm", { locale: uz });
+  return format(d, "d-MMM yyyy, HH:mm", { locale: uz });
+}
+
 export function isPredictionLocked(scheduledAt: string | Date, minutesBefore = 5): boolean {
   const lockTime = addMinutes(new Date(scheduledAt), -minutesBefore);
   return isPast(lockTime);
@@ -44,7 +55,6 @@ export function getPointsLabel(points: number | null): { label: string; color: s
 }
 
 export function getUserDisplayName(user: { firstName: string; lastName?: string | null; username?: string | null }): string {
-  if (user.username) return `@${user.username}`;
   return [user.firstName, user.lastName].filter(Boolean).join(" ");
 }
 
