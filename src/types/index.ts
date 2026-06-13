@@ -45,9 +45,12 @@ export interface Reaction {
 export interface Comment {
   id: string;
   predictionId: string;
+  parentId: string | null;
   content: string;
   createdAt: string;
+  updatedAt: string;
   user: Pick<User, "id" | "firstName" | "username" | "photoUrl">;
+  replies?: Omit<Comment, "replies">[];
 }
 
 export interface Prediction {

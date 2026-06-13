@@ -86,10 +86,19 @@ export const reactionsAPI = {
 export const commentsAPI = {
   getAll: (predictionId: string) =>
     request<{ data: Comment[] }>(`/predictions/${predictionId}/comments`),
-  create: (predictionId: string, content: string) =>
+  create: (predictionId: string, content: string, parentId?: string) =>
     request<Comment>(`/predictions/${predictionId}/comments`, {
       method: "POST",
+      body: JSON.stringify({ content, ...(parentId && { parentId }) }),
+    }),
+  update: (predictionId: string, commentId: string, content: string) =>
+    request<Comment>(`/predictions/${predictionId}/comments/${commentId}`, {
+      method: "PATCH",
       body: JSON.stringify({ content }),
+    }),
+  delete: (predictionId: string, commentId: string) =>
+    request<{ success: boolean }>(`/predictions/${predictionId}/comments/${commentId}`, {
+      method: "DELETE",
     }),
 };
 

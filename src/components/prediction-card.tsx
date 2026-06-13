@@ -6,6 +6,7 @@ import Link from "next/link";
 import { reactionsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserDisplayName, formatRelativeTime, getPointsLabel, cn } from "@/lib/utils";
+import { CommentSection } from "@/components/comment-section";
 import type { Prediction, Reaction } from "@/types";
 
 const EMOJIS = ["🔥", "❤️", "😲", "👏", "😢"];
@@ -110,7 +111,7 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
         <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.awayScore}</span>
       </div>
 
-      {/* Reactions */}
+      {/* Reactions + Comments */}
       <div className="flex items-center gap-1.5 flex-wrap">
         {grouped.map(({ emoji, count }) => (
           <button
@@ -168,6 +169,16 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
           </div>
         )}
       </div>
+
+      {prediction.points !== null && (
+        <>
+          <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
+          <CommentSection
+            predictionId={prediction.id}
+            initialCount={prediction.comments?.length ?? 0}
+          />
+        </>
+      )}
     </div>
   );
 }
