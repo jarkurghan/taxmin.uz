@@ -29,7 +29,6 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
   const handleReaction = async (emoji: string) => {
     if (!user) return;
     setShowReactionBar(false);
-
     const prev = myReaction;
     const prevReactions = reactions;
 
@@ -37,11 +36,12 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
       setMyReaction(null);
       setReactions((r) => r.filter((rx) => !(rx.userId === user.id && rx.emoji === emoji)));
     } else {
-      if (myReaction) {
-        setReactions((r) => r.filter((rx) => !(rx.userId === user.id)));
-      }
+      if (myReaction) setReactions((r) => r.filter((rx) => rx.userId !== user.id));
       setMyReaction(emoji);
-      setReactions((r) => [...r.filter((rx) => rx.userId !== user.id), { id: "temp", predictionId: prediction.id, userId: user.id, emoji, createdAt: new Date().toISOString() }]);
+      setReactions((r) => [
+        ...r.filter((rx) => rx.userId !== user.id),
+        { id: "temp", predictionId: prediction.id, userId: user.id, emoji, createdAt: new Date().toISOString() },
+      ]);
     }
 
     try {
@@ -52,86 +52,121 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
     }
   };
 
-  const pred = prediction;
-  const { label: pointsLabel, color: pointsColor } = getPointsLabel(pred.points);
+  const { label: pointsLabel, color: pointsColor } = getPointsLabel(prediction.points);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
+    <div
+      className="rounded-2xl p-4 space-y-3"
+      style={{
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.07)",
+      }}
+    >
       {/* User row */}
       <div className="flex items-center justify-between">
-        <Link href={`/profile/${pred.user?.id}`} className="flex items-center gap-2 min-w-0">
-          {pred.user?.photoUrl ? (
-            <Image src={pred.user.photoUrl} alt="" width={32} height={32} className="rounded-full flex-shrink-0" />
+        <Link href={`/profile/${prediction.user?.id}`} className="flex items-center gap-2.5 min-w-0">
+          {prediction.user?.photoUrl ? (
+            <Image
+              src={prediction.user.photoUrl}
+              alt=""
+              width={32}
+              height={32}
+              className="rounded-full flex-shrink-0"
+              style={{ border: "1px solid rgba(255,255,255,0.1)" }}
+            />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 text-white text-sm flex items-center justify-center font-bold flex-shrink-0">
-              {pred.user?.firstName[0]}
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+              style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+            >
+              {prediction.user?.firstName[0]}
             </div>
           )}
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">
-              {pred.user ? getUserDisplayName(pred.user) : "Foydalanuvchi"}
+            <p className="text-sm font-semibold text-zinc-200 truncate">
+              {prediction.user ? getUserDisplayName(prediction.user) : "Foydalanuvchi"}
             </p>
-            <p className="text-xs text-gray-400">{formatRelativeTime(pred.createdAt)}</p>
+            <p className="text-xs text-zinc-600">{formatRelativeTime(prediction.createdAt)}</p>
           </div>
         </Link>
 
-        {pred.points !== null && (
-          <span className={cn("text-xs font-bold shrink-0", pointsColor)}>
-            +{pred.points} • {pointsLabel}
+        {prediction.points !== null && (
+          <span className={cn("text-xs font-bold shrink-0 ml-2", pointsColor)}>
+            +{prediction.points} · {pointsLabel}
           </span>
         )}
       </div>
 
-      {/* Score prediction */}
-      <div className="bg-gray-50 rounded-xl px-4 py-3 flex items-center justify-center gap-4">
-        <span className="text-2xl font-bold text-gray-900">{pred.homeScore}</span>
-        <span className="text-gray-400 font-bold text-lg">:</span>
-        <span className="text-2xl font-bold text-gray-900">{pred.awayScore}</span>
+      {/* Score */}
+      <div
+        className="rounded-xl px-6 py-3 flex items-center justify-center gap-5"
+        style={{
+          background: "rgba(0,0,0,0.35)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.homeScore}</span>
+        <span className="text-zinc-700 text-xl font-bold">:</span>
+        <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.awayScore}</span>
       </div>
 
-      {/* Reactions row */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {grouped.map(({ emoji, count }) => (
-            <button
-              key={emoji}
-              onClick={() => handleReaction(emoji)}
-              className={cn(
-                "flex items-center gap-1 px-2 py-1 rounded-full text-sm border transition-all",
-                myReaction === emoji
-                  ? "bg-blue-50 border-blue-200 text-blue-700"
-                  : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-              )}
-            >
-              <span>{emoji}</span>
-              <span className="text-xs font-medium">{count}</span>
-            </button>
-          ))}
+      {/* Reactions */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {grouped.map(({ emoji, count }) => (
+          <button
+            key={emoji}
+            onClick={() => handleReaction(emoji)}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-sm transition-all duration-150"
+            style={
+              myReaction === emoji
+                ? { background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)", color: "#4ade80" }
+                : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#71717a" }
+            }
+          >
+            <span>{emoji}</span>
+            <span className="text-xs font-medium">{count}</span>
+          </button>
+        ))}
 
-          {user && user.id !== pred.userId && (
-            <div className="relative">
-              <button
-                onClick={() => setShowReactionBar(!showReactionBar)}
-                className="w-7 h-7 rounded-full bg-gray-100 border border-gray-200 text-gray-400 hover:bg-gray-200 transition-colors text-sm flex items-center justify-center"
+        {user && user.id !== prediction.userId && (
+          <div className="relative">
+            <button
+              onClick={() => setShowReactionBar(!showReactionBar)}
+              className="w-7 h-7 rounded-full flex items-center justify-center text-sm transition-all"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.09)",
+                color: "#52525b",
+              }}
+            >
+              {myReaction ?? "+"}
+            </button>
+            {showReactionBar && (
+              <div
+                className="absolute bottom-9 left-0 flex gap-1 rounded-2xl px-2 py-2 z-10"
+                style={{
+                  background: "rgba(15, 16, 22, 0.98)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  backdropFilter: "blur(20px)",
+                  boxShadow: "0 8px 30px rgba(0,0,0,0.6)",
+                }}
               >
-                {myReaction ?? "+"}
-              </button>
-              {showReactionBar && (
-                <div className="absolute bottom-9 left-0 bg-white border border-gray-200 rounded-2xl px-2 py-1.5 flex gap-1 shadow-lg z-10">
-                  {EMOJIS.map((e) => (
-                    <button
-                      key={e}
-                      onClick={() => handleReaction(e)}
-                      className={cn("text-xl p-1 rounded-xl hover:bg-gray-100 transition-colors", myReaction === e && "bg-blue-50")}
-                    >
-                      {e}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+                {EMOJIS.map((e) => (
+                  <button
+                    key={e}
+                    onClick={() => handleReaction(e)}
+                    className={cn(
+                      "text-xl p-1.5 rounded-xl transition-all",
+                      myReaction === e ? "bg-green-900/40" : "hover:bg-white/5"
+                    )}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

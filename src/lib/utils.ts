@@ -36,11 +36,11 @@ export function getMatchStatusLabel(status: MatchStatus): string {
 }
 
 export function getPointsLabel(points: number | null): { label: string; color: string } {
-  if (points === null) return { label: "—", color: "text-gray-400" };
-  if (points === 5) return { label: "Aniq 🎯", color: "text-emerald-600" };
-  if (points === 3) return { label: "Deyarli ✅", color: "text-blue-600" };
-  if (points === 1) return { label: "G'olib ✔️", color: "text-yellow-600" };
-  return { label: "Noto'g'ri ❌", color: "text-red-500" };
+  if (points === null) return { label: "—", color: "text-zinc-600" };
+  if (points === 5) return { label: "Aniq 🎯", color: "text-green-400" };
+  if (points === 3) return { label: "Deyarli ✅", color: "text-blue-400" };
+  if (points === 1) return { label: "G'olib ✔️", color: "text-yellow-400" };
+  return { label: "Noto'g'ri ❌", color: "text-red-400" };
 }
 
 export function getUserDisplayName(user: { firstName: string; lastName?: string | null; username?: string | null }): string {
@@ -66,7 +66,7 @@ const FLAG_MAP: Record<string, string> = {
   AUS: "🇦🇺", JPN: "🇯🇵", KOR: "🇰🇷", IRN: "🇮🇷", SAU: "🇸🇦",
   QAT: "🇶🇦", MAR: "🇲🇦", SEN: "🇸🇳", GHA: "🇬🇭", CMR: "🇨🇲",
   TUN: "🇹🇳", CIV: "🇨🇮", NGA: "🇳🇬", EGY: "🇪🇬", MLI: "🇲🇱",
-  MEX: "🇲🇽", CRC: "🇨🇷", PAN: "🇵🇦", JAM: "🇯🇲", HON: "🇭🇳",
+  CRC: "🇨🇷", PAN: "🇵🇦", JAM: "🇯🇲", HON: "🇭🇳",
   UZB: "🇺🇿", CHN: "🇨🇳", IND: "🇮🇳",
 };
 

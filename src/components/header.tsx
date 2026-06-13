@@ -3,57 +3,81 @@
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserDisplayName } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export function Header() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+    <header
+      className="sticky top-0 z-40"
+      style={{
+        background: "rgba(5, 6, 10, 0.92)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
+      }}
+    >
       <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl">⚽</span>
-          <div>
-            <span className="font-bold text-gray-900 text-sm leading-none">Taxminlar Ligasi</span>
-            <span className="block text-[10px] text-gray-400 leading-none">FIFA 2026</span>
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3">
+          <div
+            className="w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #22c55e, #15803d)",
+              boxShadow: "0 0 16px rgba(34, 197, 94, 0.3)",
+            }}
+          >
+            ⚽
+          </div>
+          <div className="leading-none">
+            <div className="font-display font-bold text-white text-sm tracking-wider uppercase">
+              Taxminlar Ligasi
+            </div>
+            <div className="text-[10px] text-green-400 tracking-[0.25em] uppercase mt-0.5">FIFA 2026</div>
           </div>
         </Link>
 
-        <nav className="flex items-center gap-1">
-          <Link href="/leaderboard">
-            <Button variant="ghost" size="sm">🏆 Reyting</Button>
-          </Link>
-
-          {user ? (
-            <div className="flex items-center gap-2">
-              <Link href="/profile">
-                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors">
-                  {user.photoUrl ? (
-                    <Image
-                      src={user.photoUrl}
-                      alt={user.firstName}
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-primary-800 text-white text-xs flex items-center justify-center font-bold">
-                      {user.firstName[0]}
-                    </div>
-                  )}
-                  <span className="text-sm font-medium text-gray-700 hidden sm:block">
-                    {getUserDisplayName(user)}
-                  </span>
+        {/* User avatar (or nothing — nav is in bottom bar) */}
+        {user ? (
+          <Link href="/profile">
+            <div
+              className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all"
+              style={{ border: "1px solid rgba(255,255,255,0.07)" }}
+            >
+              {user.photoUrl ? (
+                <Image
+                  src={user.photoUrl}
+                  alt={user.firstName}
+                  width={26}
+                  height={26}
+                  className="rounded-full"
+                />
+              ) : (
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                  style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+                >
+                  {user.firstName[0]}
                 </div>
-              </Link>
+              )}
+              <span className="text-xs font-medium text-zinc-400 hidden sm:block">
+                {getUserDisplayName(user)}
+              </span>
             </div>
-          ) : (
-            <Link href="/auth/telegram/callback">
-              <Button size="sm">Kirish</Button>
-            </Link>
-          )}
-        </nav>
+          </Link>
+        ) : (
+          <Link
+            href="/auth/telegram/callback"
+            className="text-xs font-semibold text-white px-3 py-1.5 rounded-xl transition-all hover:opacity-80"
+            style={{
+              background: "linear-gradient(135deg, #22c55e, #15803d)",
+              boxShadow: "0 0 12px rgba(34, 197, 94, 0.2)",
+            }}
+          >
+            Kirish
+          </Link>
+        )}
       </div>
     </header>
   );

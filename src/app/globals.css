@@ -3,12 +3,28 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+  :root {
+    --bg: #07080d;
+    --glass: rgba(255, 255, 255, 0.04);
+    --glass-md: rgba(255, 255, 255, 0.06);
+    --glass-hover: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.05);
   }
 
   * {
     @apply box-border;
+  }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse 70% 50% at 15% 0%, rgba(34, 197, 94, 0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 85% 100%, rgba(99, 102, 241, 0.06) 0%, transparent 65%);
+    background-attachment: fixed;
+    color: #f4f4f5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -19,5 +35,45 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border);
+  }
+
+  .glass-hover:hover {
+    background: var(--glass-hover);
+  }
+
+  .text-gradient-green {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #fbbf24, #fde68a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-white {
+    background: linear-gradient(135deg, #ffffff 40%, #71717a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-green {
+    box-shadow: 0 0 24px rgba(34, 197, 94, 0.2);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 24px rgba(251, 191, 36, 0.2);
   }
 }

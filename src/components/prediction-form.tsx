@@ -13,6 +13,36 @@ interface PredictionFormProps {
   onSaved?: (prediction: Prediction) => void;
 }
 
+function ScoreButton({
+  label,
+  onClick,
+  variant,
+}: {
+  label: string;
+  onClick: () => void;
+  variant: "up" | "down";
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-150 active:scale-90"
+      style={{
+        background:
+          variant === "up"
+            ? "rgba(34,197,94,0.12)"
+            : "rgba(239,68,68,0.08)",
+        border:
+          variant === "up"
+            ? "1px solid rgba(34,197,94,0.2)"
+            : "1px solid rgba(239,68,68,0.15)",
+        color: variant === "up" ? "#4ade80" : "#f87171",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function PredictionForm({ match, onSaved }: PredictionFormProps) {
   const { user } = useAuth();
   const existing = match.myPrediction;
@@ -27,8 +57,7 @@ export function PredictionForm({ match, onSaved }: PredictionFormProps) {
   const isFinished = match.status === "finished";
 
   const adjust = (setter: (v: number) => void, val: number, delta: number) => {
-    const next = Math.max(0, Math.min(30, val + delta));
-    setter(next);
+    setter(Math.max(0, Math.min(30, val + delta)));
     setSaved(false);
   };
 
@@ -36,7 +65,11 @@ export function PredictionForm({ match, onSaved }: PredictionFormProps) {
     setError(null);
     setLoading(true);
     try {
-      const pred = await predictionsAPI.create({ matchId: match.id, homeScore: home, awayScore: away });
+      const pred = await predictionsAPI.create({
+        matchId: match.id,
+        homeScore: home,
+        awayScore: away,
+      });
       setSaved(true);
       onSaved?.(pred);
     } catch (err) {
@@ -48,8 +81,12 @@ export function PredictionForm({ match, onSaved }: PredictionFormProps) {
 
   if (!user) {
     return (
-      <div className="bg-blue-50 rounded-2xl p-4 text-center">
-        <p className="text-sm text-gray-600 mb-3">Taxmin qilish uchun Telegram orqali kiring</p>
+      <div
+        className="rounded-2xl p-6 text-center"
+        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+      >
+        <p className="text-3xl mb-3">🔒</p>
+        <p className="text-sm text-zinc-400 mb-4">Taxmin qilish uchun kiring</p>
         <Link href="/auth/telegram/callback">
           <Button size="sm">Telegram orqali kirish</Button>
         </Link>
@@ -60,11 +97,14 @@ export function PredictionForm({ match, onSaved }: PredictionFormProps) {
   if (isFinished) {
     if (!existing) return null;
     return (
-      <div className="bg-gray-50 rounded-2xl p-4">
-        <p className="text-xs text-gray-500 mb-1">Mening taxminim</p>
-        <p className="text-lg font-bold">{existing.homeScore} : {existing.awayScore}</p>
+      <div
+        className="rounded-2xl p-4"
+        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+      >
+        <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Mening taxminim</p>
+        <p className="text-3xl font-display font-bold text-white">{existing.homeScore} : {existing.awayScore}</p>
         {existing.points !== null && (
-          <p className="text-sm text-blue-600 font-semibold mt-1">+{existing.points} ball</p>
+          <p className="text-sm text-green-400 font-semibold mt-1">+{existing.points} ball</p>
         )}
       </div>
     );
@@ -73,59 +113,88 @@ export function PredictionForm({ match, onSaved }: PredictionFormProps) {
   if (locked) {
     if (!existing) {
       return (
-        <div className="bg-gray-50 rounded-2xl p-4 text-center text-sm text-gray-500">
-          Taxmin qilish muddati tugadi
+        <div
+          className="rounded-2xl p-4 text-center"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <p className="text-sm text-zinc-600">Taxmin qilish muddati tugadi</p>
         </div>
       );
     }
     return (
-      <div className="bg-gray-50 rounded-2xl p-4">
-        <p className="text-xs text-gray-500 mb-1">Mening taxminim (yakunlangan)</p>
-        <p className="text-lg font-bold">{existing.homeScore} : {existing.awayScore}</p>
+      <div
+        className="rounded-2xl p-4"
+        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+      >
+        <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Mening taxminim · yakunlangan</p>
+        <p className="text-3xl font-display font-bold text-white">{existing.homeScore} : {existing.awayScore}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100">
-      <h3 className="text-sm font-semibold text-gray-700 mb-4 text-center">
-        {existing ? "Taxminni yangilash" : "Taxminingizni kiriting"}
-      </h3>
+    <div
+      className="relative rounded-3xl overflow-hidden"
+      style={{
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.09)",
+      }}
+    >
+      {/* Top glow line */}
+      <div
+        className="absolute inset-x-0 top-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(34,197,94,0.5), transparent)" }}
+      />
 
-      <div className="flex items-center justify-center gap-6">
-        {/* Home score */}
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-2xl">{getTeamFlag(match.homeTeamCode)}</span>
-          <div className="flex flex-col items-center gap-1">
-            <button onClick={() => adjust(setHome, home, 1)} className="w-8 h-8 rounded-full bg-white shadow text-lg font-bold text-blue-600 hover:bg-blue-50 transition-colors">+</button>
-            <span className="text-3xl font-bold text-gray-900 w-10 text-center">{home}</span>
-            <button onClick={() => adjust(setHome, home, -1)} className="w-8 h-8 rounded-full bg-white shadow text-lg font-bold text-blue-600 hover:bg-blue-50 transition-colors">−</button>
+      <div className="px-6 py-6">
+        <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.25em] text-center mb-6">
+          {existing ? "Taxminni yangilash" : "Taxminingizni kiriting"}
+        </p>
+
+        <div className="flex items-center justify-center gap-8">
+          {/* Home */}
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-4xl leading-none">{getTeamFlag(match.homeTeamCode)}</span>
+            <div className="flex flex-col items-center gap-2">
+              <ScoreButton label="+" onClick={() => adjust(setHome, home, 1)} variant="up" />
+              <span className="text-5xl font-display font-bold text-white tabular-nums w-14 text-center leading-none py-1">
+                {home}
+              </span>
+              <ScoreButton label="−" onClick={() => adjust(setHome, home, -1)} variant="down" />
+            </div>
+          </div>
+
+          <span
+            className="text-4xl font-display font-bold"
+            style={{ color: "rgba(255,255,255,0.08)" }}
+          >
+            :
+          </span>
+
+          {/* Away */}
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-4xl leading-none">{getTeamFlag(match.awayTeamCode)}</span>
+            <div className="flex flex-col items-center gap-2">
+              <ScoreButton label="+" onClick={() => adjust(setAway, away, 1)} variant="up" />
+              <span className="text-5xl font-display font-bold text-white tabular-nums w-14 text-center leading-none py-1">
+                {away}
+              </span>
+              <ScoreButton label="−" onClick={() => adjust(setAway, away, -1)} variant="down" />
+            </div>
           </div>
         </div>
 
-        <span className="text-2xl font-bold text-gray-300">:</span>
+        {error && <p className="text-xs text-red-400 text-center mt-4">{error}</p>}
 
-        {/* Away score */}
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-2xl">{getTeamFlag(match.awayTeamCode)}</span>
-          <div className="flex flex-col items-center gap-1">
-            <button onClick={() => adjust(setAway, away, 1)} className="w-8 h-8 rounded-full bg-white shadow text-lg font-bold text-blue-600 hover:bg-blue-50 transition-colors">+</button>
-            <span className="text-3xl font-bold text-gray-900 w-10 text-center">{away}</span>
-            <button onClick={() => adjust(setAway, away, -1)} className="w-8 h-8 rounded-full bg-white shadow text-lg font-bold text-blue-600 hover:bg-blue-50 transition-colors">−</button>
-          </div>
-        </div>
+        <Button
+          className="w-full mt-6"
+          loading={loading}
+          onClick={handleSubmit}
+          variant={saved ? "secondary" : "primary"}
+        >
+          {saved ? "✓ Saqlandi" : existing ? "Yangilash" : "Taxmin qilish"}
+        </Button>
       </div>
-
-      {error && <p className="text-xs text-red-500 text-center mt-3">{error}</p>}
-
-      <Button
-        className="w-full mt-4"
-        loading={loading}
-        onClick={handleSubmit}
-        variant={saved ? "secondary" : "primary"}
-      >
-        {saved ? "✓ Saqlandi" : existing ? "Yangilash" : "Taxmin qilish"}
-      </Button>
     </div>
   );
 }
