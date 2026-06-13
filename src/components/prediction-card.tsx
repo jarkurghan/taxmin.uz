@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { reactionsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { getUserDisplayName, formatAbsoluteTime, getPointsLabel, cn } from "@/lib/utils";
+import { getUserDisplayName, formatAbsoluteTime, formatMatchTime, getTeamFlag, getPointsLabel, cn } from "@/lib/utils";
 import { CommentSection } from "@/components/comment-section";
 import type { Prediction, Reaction } from "@/types";
 
@@ -97,6 +97,36 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
           </span>
         )}
       </div>
+
+      {/* Match header */}
+      {showMatch && prediction.match && (
+        <Link
+          href={`/matches/${prediction.match.id}`}
+          className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors hover:bg-white/[0.03]"
+          style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <div className="flex items-center gap-1.5 flex-1 min-w-0">
+            <span className="text-base leading-none">{getTeamFlag(prediction.match.homeTeamCode)}</span>
+            <span className="text-xs font-semibold text-zinc-300 truncate">{prediction.match.homeTeam}</span>
+          </div>
+          <div className="shrink-0 text-center px-1">
+            {prediction.match.homeScore !== null ? (
+              <p className="text-xs font-bold text-zinc-200 tabular-nums">
+                {prediction.match.homeScore} : {prediction.match.awayScore}
+              </p>
+            ) : (
+              <p className="text-[10px] text-zinc-500 whitespace-nowrap">
+                {formatMatchTime(prediction.match.scheduledAt)}
+              </p>
+            )}
+            <p className="text-[9px] text-zinc-700 uppercase tracking-wide mt-0.5">{prediction.match.stage}</p>
+          </div>
+          <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+            <span className="text-xs font-semibold text-zinc-300 truncate">{prediction.match.awayTeam}</span>
+            <span className="text-base leading-none">{getTeamFlag(prediction.match.awayTeamCode)}</span>
+          </div>
+        </Link>
+      )}
 
       {/* Score */}
       <div
