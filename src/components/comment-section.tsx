@@ -58,7 +58,7 @@ export function CommentSection({ predictionId, initialCount = 0 }: CommentSectio
         )
       );
     } else {
-      setComments((prev) => [...prev, { ...comment, replies: [] }]);
+      setComments((prev) => [{ ...comment, replies: [] }, ...prev]);
     }
     setCount((n) => n + 1);
   };

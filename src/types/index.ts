@@ -39,7 +39,7 @@ export interface Reaction {
   userId: string;
   emoji: string;
   createdAt: string;
-  user?: Pick<User, "id" | "firstName" | "username">;
+  user?: Pick<User, "id" | "firstName" | "username" | "photoUrl">;
 }
 
 export interface Comment {
@@ -67,6 +67,7 @@ export interface Prediction {
   reactions?: Reaction[];
   comments?: Comment[];
   myReaction?: string | null;
+  commentCount?: number;
 }
 
 export interface PaginatedResponse<T> {
