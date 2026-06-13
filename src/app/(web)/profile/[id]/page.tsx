@@ -2,9 +2,12 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usersAPI } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import { PredictionCard } from "@/components/prediction-card";
 import { getUserDisplayName } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import type { User, Prediction } from "@/types";
 
 interface Props {
@@ -13,18 +16,33 @@ interface Props {
 
 export default function UserProfilePage({ params }: Props) {
   const { id } = use(params);
+  const { user: me, isHydrated } = useAuth();
   const [data, setData] = useState<(User & { predictions: Prediction[] }) | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!isHydrated) return;
+    if (!me) { setIsLoading(false); return; }
     usersAPI.getById(id).then(setData).finally(() => setIsLoading(false));
-  }, [id]);
+  }, [id, me, isHydrated]);
 
-  if (isLoading) {
+  if (!isHydrated || isLoading) {
     return (
       <div className="space-y-4">
         <div className="rounded-3xl h-52 animate-pulse" style={{ background: "rgba(255,255,255,0.04)" }} />
         <div className="rounded-2xl h-24 animate-pulse" style={{ background: "rgba(255,255,255,0.04)" }} />
+      </div>
+    );
+  }
+
+  if (!me) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-5xl mb-4">🔒</p>
+        <p className="text-zinc-500 mb-5">Profilni ko'rish uchun tizimga kiring</p>
+        <Link href="/auth/telegram/callback">
+          <Button>Telegram orqali kirish</Button>
+        </Link>
       </div>
     );
   }
