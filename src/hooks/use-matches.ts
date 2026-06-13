@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { matchesAPI, predictionsAPI } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import type { Match, Prediction } from "@/types";
 
 export function useMatches(status?: string) {
@@ -13,7 +14,7 @@ export function useMatches(status?: string) {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await matchesAPI.getAll({ status, limit: 50 });
+      const res = await matchesAPI.getAll({ status });
       setMatches(res.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Xato yuz berdi");
@@ -40,33 +41,20 @@ export function useMatch(id: string) {
 }
 
 export function useMatchPredictions(matchId: string) {
+  const user = useAuth((s) => s.user);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
 
-  const load = useCallback(async (p: number) => {
-    setIsLoading(true);
-    try {
-      const res = await matchesAPI.getPredictions(matchId, p);
-      if (p === 1) {
-        setPredictions(res.data);
-      } else {
-        setPredictions((prev) => [...prev, ...res.data]);
-      }
-      setHasMore(res.data.length === res.limit);
-    } finally {
+  useEffect(() => {
+    if (!user) {
       setIsLoading(false);
+      return;
     }
-  }, [matchId]);
-
-  useEffect(() => { load(1); }, [load]);
-
-  const loadMore = () => {
-    const next = page + 1;
-    setPage(next);
-    load(next);
-  };
+    matchesAPI
+      .getPredictions(matchId)
+      .then((res) => setPredictions(res.data))
+      .finally(() => setIsLoading(false));
+  }, [matchId, user]);
 
   const addOrUpdate = (pred: Prediction) => {
     setPredictions((prev) => {
@@ -80,5 +68,5 @@ export function useMatchPredictions(matchId: string) {
     });
   };
 
-  return { predictions, isLoading, hasMore, loadMore, addOrUpdate };
+  return { predictions, isLoading, unauthorized: !user, addOrUpdate };
 }

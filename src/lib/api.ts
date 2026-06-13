@@ -49,16 +49,14 @@ export const authAPI = {
 // ─── Matches ──────────────────────────────────────────────────────────────────
 
 export const matchesAPI = {
-  getAll: (params?: { status?: string; page?: number; limit?: number }) => {
+  getAll: (params?: { status?: string }) => {
     const query = new URLSearchParams();
     if (params?.status) query.set("status", params.status);
-    if (params?.page) query.set("page", String(params.page));
-    if (params?.limit) query.set("limit", String(params.limit));
-    return request<PaginatedResponse<Match>>(`/matches?${query}`);
+    return request<{ data: Match[] }>(`/matches?${query}`);
   },
   getById: (id: string) => request<Match>(`/matches/${id}`),
-  getPredictions: (id: string, page = 1) =>
-    request<PaginatedResponse<Prediction>>(`/matches/${id}/predictions?page=${page}`),
+  getPredictions: (id: string) =>
+    request<{ data: Prediction[] }>(`/matches/${id}/predictions`),
 };
 
 // ─── Predictions ──────────────────────────────────────────────────────────────
@@ -66,8 +64,8 @@ export const matchesAPI = {
 export const predictionsAPI = {
   create: (data: { matchId: string; homeScore: number; awayScore: number }) =>
     request<Prediction>("/predictions", { method: "POST", body: JSON.stringify(data) }),
-  getMine: (page = 1) =>
-    request<PaginatedResponse<Prediction>>(`/predictions/me?page=${page}`),
+  getMine: () =>
+    request<{ data: Prediction[] }>("/predictions/me"),
   getById: (id: string) => request<Prediction>(`/predictions/${id}`),
 };
 
@@ -108,6 +106,6 @@ export const usersAPI = {
   getMe: () => request<User>("/users/me"),
   getById: (id: string) =>
     request<User & { predictions: Prediction[] }>(`/users/${id}`),
-  getLeaderboard: (page = 1) =>
-    request<PaginatedResponse<User>>(`/users/leaderboard?page=${page}`),
+  getLeaderboard: () =>
+    request<{ data: User[] }>("/users/leaderboard"),
 };

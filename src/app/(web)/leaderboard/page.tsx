@@ -46,7 +46,7 @@ function UserRow({ user: u, rank, isMe, featured = false }: UserRowProps) {
     return (
       <Link href={`/profile/${u.id}`}>
         <div
-          className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+          className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] mb-1"
           style={{
             background: cfg.bg,
             border: `1px solid ${cfg.border}`,
@@ -129,6 +129,20 @@ function UserRow({ user: u, rank, isMe, featured = false }: UserRowProps) {
   );
 }
 
+function getRanks(users: User[]): number[] {
+  const ranks: number[] = [];
+  for (let i = 0; i < users.length; i++) {
+    if (i === 0) {
+      ranks.push(1);
+    } else if (users[i].totalPoints === users[i - 1].totalPoints) {
+      ranks.push(ranks[i - 1]);
+    } else {
+      ranks.push(i + 1);
+    }
+  }
+  return ranks;
+}
+
 export default function LeaderboardPage() {
   const { user: me } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
@@ -136,13 +150,14 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     usersAPI
-      .getLeaderboard(1)
+      .getLeaderboard()
       .then((res) => setUsers(res.data))
       .finally(() => setIsLoading(false));
   }, []);
 
-  const top3 = users.slice(0, 3);
-  const rest = users.slice(3);
+  const ranks = getRanks(users);
+  const featured = users.filter((_, i) => ranks[i] <= 3);
+  const rest = users.filter((_, i) => ranks[i] > 3);
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -174,13 +189,13 @@ export default function LeaderboardPage() {
       ) : (
         <>
           {/* Top 3 — featured */}
-          {top3.length > 0 && (
+          {featured.length > 0 && (
             <div className="space-y-2.5">
-              {top3.map((u, i) => (
+              {featured.map((u, i) => (
                 <UserRow
                   key={u.id}
                   user={u}
-                  rank={i + 1}
+                  rank={ranks[i]}
                   isMe={me?.id === u.id}
                   featured
                 />
@@ -201,9 +216,10 @@ export default function LeaderboardPage() {
 
           {/* Rest */}
           <div className="space-y-1.5">
-            {rest.map((u, i) => (
-              <UserRow key={u.id} user={u} rank={i + 4} isMe={me?.id === u.id} />
-            ))}
+            {rest.map((u) => {
+              const idx = users.indexOf(u);
+              return <UserRow key={u.id} user={u} rank={ranks[idx]} isMe={me?.id === u.id} />;
+            })}
           </div>
         </>
       )}

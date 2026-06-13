@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { commentsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserDisplayName, formatAbsoluteTime, cn } from "@/lib/utils";
@@ -14,6 +15,17 @@ interface CommentSectionProps {
 
 export function CommentSection({ predictionId, initialCount = 0 }: CommentSectionProps) {
   const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <Link href="/auth/telegram/callback" className="flex items-center gap-1.5 text-xs text-zinc-700 hover:text-zinc-400 transition-colors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+        Izohlarni ko'rish uchun kiring
+      </Link>
+    );
+  }
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -418,8 +430,8 @@ function UserAvatar({ user, size }: { user: { firstName: string; photoUrl?: stri
         alt=""
         width={size}
         height={size}
-        className="rounded-full flex-shrink-0"
-        style={{ border: "1px solid rgba(255,255,255,0.08)", minWidth: size }}
+        className="rounded-full flex-shrink-0 object-cover"
+        style={{ border: "1px solid rgba(255,255,255,0.08)", minWidth: size, minHeight: size, width: size, height: size }}
       />
     );
   }

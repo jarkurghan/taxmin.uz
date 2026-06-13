@@ -4,7 +4,7 @@ import { useMatch, useMatchPredictions } from "@/hooks/use-matches";
 import { PredictionForm } from "@/components/prediction-form";
 import { PredictionCard } from "@/components/prediction-card";
 import { getTeamFlag, formatMatchDate, cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import type { Prediction } from "@/types";
 
 interface MatchDetailProps {
@@ -14,7 +14,7 @@ interface MatchDetailProps {
 
 export function MatchDetail({ id, backSlot }: MatchDetailProps) {
   const { match, isLoading: matchLoading, setMatch } = useMatch(id);
-  const { predictions, isLoading: predsLoading, hasMore, loadMore, addOrUpdate } = useMatchPredictions(id);
+  const { predictions, isLoading: predsLoading, unauthorized, addOrUpdate } = useMatchPredictions(id);
 
   if (matchLoading) {
     return (
@@ -155,7 +155,19 @@ export function MatchDetail({ id, backSlot }: MatchDetailProps) {
           <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
         </div>
 
-        {predsLoading && predictions.length === 0 ? (
+        {unauthorized ? (
+          <div className="text-center py-10">
+            <p className="text-4xl mb-3">🔒</p>
+            <p className="text-sm text-zinc-500 mb-4">Taxminlarni ko'rish uchun tizimga kiring</p>
+            <Link
+              href="/auth/telegram/callback"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+              style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+            >
+              Kirish
+            </Link>
+          </div>
+        ) : predsLoading && predictions.length === 0 ? (
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
@@ -173,11 +185,6 @@ export function MatchDetail({ id, backSlot }: MatchDetailProps) {
             {predictions.map((pred) => (
               <PredictionCard key={pred.id} prediction={pred} />
             ))}
-            {hasMore && (
-              <Button variant="secondary" className="w-full" onClick={loadMore} loading={predsLoading}>
-                Ko'proq ko'rsatish
-              </Button>
-            )}
           </>
         )}
       </div>

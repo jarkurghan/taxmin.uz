@@ -33,7 +33,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!user) return;
     predictionsAPI
-      .getMine(1)
+      .getMine()
       .then((res) => setPredictions(res.data))
       .finally(() => setIsLoading(false));
   }, [user]);
