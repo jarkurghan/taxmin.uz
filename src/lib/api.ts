@@ -64,6 +64,8 @@ export const matchesAPI = {
 export const predictionsAPI = {
   create: (data: { matchId: string; homeScore: number; awayScore: number }) =>
     request<Prediction>("/predictions", { method: "POST", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    request<{ success: boolean }>(`/predictions/${id}`, { method: "DELETE" }),
   getMine: () =>
     request<{ data: Prediction[] }>("/predictions/me"),
   getById: (id: string) => request<Prediction>(`/predictions/${id}`),

@@ -14,7 +14,7 @@ interface MatchDetailProps {
 
 export function MatchDetail({ id, backSlot }: MatchDetailProps) {
   const { match, isLoading: matchLoading, setMatch } = useMatch(id);
-  const { predictions, isLoading: predsLoading, unauthorized, addOrUpdate } = useMatchPredictions(id);
+  const { predictions, isLoading: predsLoading, unauthorized, add, remove } = useMatchPredictions(id);
 
   if (matchLoading) {
     return (
@@ -131,15 +131,20 @@ export function MatchDetail({ id, backSlot }: MatchDetailProps) {
       <PredictionForm
         match={match}
         onSaved={(pred: Prediction) => {
-          addOrUpdate(pred);
+          add(pred);
           setMatch({
             ...match,
             myPrediction: {
+              id: pred.id,
               homeScore: pred.homeScore,
               awayScore: pred.awayScore,
               points: pred.points,
             },
           });
+        }}
+        onDeleted={(predId) => {
+          remove(predId);
+          setMatch({ ...match, myPrediction: null });
         }}
       />
 

@@ -56,17 +56,13 @@ export function useMatchPredictions(matchId: string) {
       .finally(() => setIsLoading(false));
   }, [matchId, user]);
 
-  const addOrUpdate = (pred: Prediction) => {
-    setPredictions((prev) => {
-      const idx = prev.findIndex((p) => p.id === pred.id);
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = pred;
-        return next;
-      }
-      return [pred, ...prev];
-    });
+  const add = (pred: Prediction) => {
+    setPredictions((prev) => [pred, ...prev]);
   };
 
-  return { predictions, isLoading, unauthorized: !user, addOrUpdate };
+  const remove = (predictionId: string) => {
+    setPredictions((prev) => prev.filter((p) => p.id !== predictionId));
+  };
+
+  return { predictions, isLoading, unauthorized: !user, add, remove };
 }

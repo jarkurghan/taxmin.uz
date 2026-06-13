@@ -208,6 +208,7 @@ interface ItemProps {
 function CommentItem({ comment, predictionId, onUpdate, onDelete, onReply, canReply }: ItemProps) {
   const { user } = useAuth();
   const isOwn = user?.id === comment.user.id;
+  const isEditable = Date.now() - new Date(comment.createdAt).getTime() < 24 * 60 * 60 * 1000;
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content);
   const [saving, setSaving] = useState(false);
@@ -303,7 +304,7 @@ function CommentItem({ comment, predictionId, onUpdate, onDelete, onReply, canRe
                 Javob
               </button>
             )}
-            {isOwn && (
+            {isOwn && isEditable && (
               <>
                 <button
                   onClick={() => setEditing(true)}

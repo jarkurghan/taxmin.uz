@@ -27,6 +27,7 @@ export interface Match {
   matchday: number | null;
   venue: string | null;
   myPrediction?: {
+    id: string;
     homeScore: number;
     awayScore: number;
     points: number | null;
