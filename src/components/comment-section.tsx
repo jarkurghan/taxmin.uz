@@ -11,9 +11,10 @@ import type { Comment } from "@/types";
 interface CommentSectionProps {
   predictionId: string;
   initialCount?: number;
+  defaultOpen?: boolean;
 }
 
-export function CommentSection({ predictionId, initialCount = 0 }: CommentSectionProps) {
+export function CommentSection({ predictionId, initialCount = 0, defaultOpen = false }: CommentSectionProps) {
   const { user } = useAuth();
 
   if (!user) {
@@ -26,7 +27,7 @@ export function CommentSection({ predictionId, initialCount = 0 }: CommentSectio
       </Link>
     );
   }
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,9 @@ export function CommentSection({ predictionId, initialCount = 0 }: CommentSectio
       setLoading(false);
     }
   };
+
+  // defaultOpen bo'lsa mount paytida yukla
+  useEffect(() => { if (defaultOpen) load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleToggle = () => {
     if (!open) load();
@@ -94,18 +98,20 @@ export function CommentSection({ predictionId, initialCount = 0 }: CommentSectio
 
   return (
     <div>
-      <button
-        onClick={handleToggle}
-        className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-        {count > 0 ? `${count} izoh` : "Izoh yozish"}
-      </button>
+      {!defaultOpen && (
+        <button
+          onClick={handleToggle}
+          className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          {count > 0 ? `${count} izoh` : "Izoh yozish"}
+        </button>
+      )}
 
       {open && (
-        <div className="mt-3 space-y-3">
+        <div className={defaultOpen ? "space-y-3" : "mt-3 space-y-3"}>
           {loading && (
             <div className="space-y-2">
               {[0, 1].map((i) => (

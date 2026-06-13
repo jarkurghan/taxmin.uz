@@ -128,18 +128,20 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
         </Link>
       )}
 
-      {/* Score */}
-      <div
-        className="rounded-xl px-6 py-3 flex items-center justify-center gap-5"
-        style={{
-          background: "rgba(0,0,0,0.35)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.homeScore}</span>
-        <span className="text-zinc-700 text-xl font-bold">:</span>
-        <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.awayScore}</span>
-      </div>
+      {/* Score — prediction detail sahifasiga link */}
+      <Link href={`/predictions/${prediction.id}`}>
+        <div
+          className="rounded-xl px-6 py-3 flex items-center justify-center gap-5 transition-colors hover:bg-black/50"
+          style={{
+            background: "rgba(0,0,0,0.35)",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.homeScore}</span>
+          <span className="text-zinc-700 text-xl font-bold">:</span>
+          <span className="text-2xl font-display font-bold text-white tabular-nums">{prediction.awayScore}</span>
+        </div>
+      </Link>
 
       {/* Reactions + Comments */}
       <div className="flex items-center gap-1.5 flex-wrap">
