@@ -6,7 +6,6 @@ import Link from "next/link";
 import { reactionsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserDisplayName, formatAbsoluteTime, formatMatchTime, getTeamFlag, getPointsLabel, cn } from "@/lib/utils";
-import { CommentSection } from "@/components/comment-section";
 import type { Prediction, Reaction } from "@/types";
 
 const EMOJIS = ["🔥", "❤️", "😲", "👏", "😢"];
@@ -245,10 +244,17 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
       </div>
 
       <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
-      <CommentSection
-        predictionId={prediction.id}
-        initialCount={prediction.commentCount ?? prediction.comments?.length ?? 0}
-      />
+      <Link
+        href={`/predictions/${prediction.id}`}
+        className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+        {(prediction.commentCount ?? 0) > 0
+          ? `${prediction.commentCount} izoh`
+          : "Izoh yozish"}
+      </Link>
     </div>
   );
 }
