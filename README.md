@@ -1,1 +1,0 @@
-# guesswork_league
