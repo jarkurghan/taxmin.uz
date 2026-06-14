@@ -183,7 +183,7 @@ export function MatchDetail({ id, backSlot }: MatchDetailProps) {
         ) : predictions.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-4xl mb-3">🔮</p>
-            <p className="text-sm text-zinc-500">Hali taxmin yo'q. Birinchi bo'ling!</p>
+            <p className="text-sm text-zinc-500">Taxminlar yo'q</p>
           </div>
         ) : (
           <>

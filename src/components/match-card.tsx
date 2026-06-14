@@ -11,7 +11,6 @@ export function MatchCard({ match, linkBase = "/matches" }: MatchCardProps) {
     const isFinished = match.status === "finished";
     const isLive = match.status === "live";
     const hasMyPrediction = !!match.myPrediction;
-
     return (
         <Link href={`${linkBase}/${match.id}`}>
             <div
