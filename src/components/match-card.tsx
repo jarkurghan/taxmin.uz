@@ -116,7 +116,7 @@ export function MatchCard({ match, linkBase = "/matches" }: MatchCardProps) {
                         </div>
                         {match.myPrediction!.points !== null && (
                             <span className={cn("text-xs font-bold", getPointsLabel(match.myPrediction!.points).color)}>
-                                +{match.myPrediction!.points} ball
+                                {match.myPrediction!.points > 0 ? "+" : ""}{match.myPrediction!.points} ball
                             </span>
                         )}
                     </div>
