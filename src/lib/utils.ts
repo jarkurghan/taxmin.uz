@@ -69,7 +69,7 @@ export function getRankMedal(rank: number): string {
 const FLAG_MAP: Record<string, string> = {
   // Shimoliy/Markaziy Amerika
   USA: "🇺🇸", MEX: "🇲🇽", CAN: "🇨🇦", CRC: "🇨🇷", PAN: "🇵🇦",
-  JAM: "🇯🇲", HON: "🇭🇳", HTI: "🇭🇹",
+  JAM: "🇯🇲", HON: "🇭🇳", HAI: "🇭🇹", CUW: "🇨🇼",
   // Janubiy Amerika
   BRA: "🇧🇷", ARG: "🇦🇷", URU: "🇺🇾", COL: "🇨🇴", ECU: "🇪🇨",
   CHL: "🇨🇱", PER: "🇵🇪", VEN: "🇻🇪", PAR: "🇵🇾", BOL: "🇧🇴",
@@ -79,12 +79,14 @@ const FLAG_MAP: Record<string, string> = {
   SRB: "🇷🇸", DEN: "🇩🇰", POL: "🇵🇱", TUR: "🇹🇷", UKR: "🇺🇦",
   WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", AUT: "🇦🇹", SVK: "🇸🇰", SVN: "🇸🇮",
   GRE: "🇬🇷", ALB: "🇦🇱", HUN: "🇭🇺", ROU: "🇷🇴", CZE: "🇨🇿",
+  NOR: "🇳🇴", SWE: "🇸🇪", BIH: "🇧🇦",
   // Osiyo
-  JPN: "🇯🇵", KOR: "🇰🇷", IRN: "🇮🇷", SAU: "🇸🇦", QAT: "🇶🇦",
-  AUS: "🇦🇺", UZB: "🇺🇿", CHN: "🇨🇳", IND: "🇮🇳", IRQ: "🇮🇶", JOR: "🇯🇴",
+  JPN: "🇯🇵", KOR: "🇰🇷", IRN: "🇮🇷", KSA: "🇸🇦", QAT: "🇶🇦",
+  AUS: "🇦🇺", UZB: "🇺🇿", IRQ: "🇮🇶", JOR: "🇯🇴",
   // Afrika
   MAR: "🇲🇦", SEN: "🇸🇳", GHA: "🇬🇭", CMR: "🇨🇲", TUN: "🇹🇳",
-  CIV: "🇨🇮", NGA: "🇳🇬", EGY: "🇪🇬", MLI: "🇲🇱", RSA: "🇿🇦", DRC: "🇨🇩",
+  CIV: "🇨🇮", NGA: "🇳🇬", EGY: "🇪🇬", MLI: "🇲🇱", RSA: "🇿🇦",
+  COD: "🇨🇩", ALG: "🇩🇿", CPV: "🇨🇻",
   // Boshqalar
   NZL: "🇳🇿",
 };
