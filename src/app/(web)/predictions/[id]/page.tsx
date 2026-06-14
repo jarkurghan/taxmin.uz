@@ -114,7 +114,7 @@ export default function PredictionPage({ params }: Props) {
 
       {/* Match header */}
       {match && (
-        <Link href={`/matches/${match.id}`}>
+        <Link href={`/matches/${match.id}`} className="space-y-4">
           <div
             className="rounded-2xl px-5 py-4 transition-colors hover:bg-white/[0.02]"
             style={{
