@@ -78,7 +78,6 @@ function UserRow({ user: u, rank, isMe, featured = false }: UserRowProps) {
               {getUserDisplayName(u)}
               {isMe && <span className="text-zinc-500 font-normal ml-1">(sen)</span>}
             </p>
-            {u.username && <p className="text-xs text-zinc-600 mt-0.5">@{u.username}</p>}
           </div>
 
           <div className="text-right shrink-0">
@@ -117,7 +116,6 @@ function UserRow({ user: u, rank, isMe, featured = false }: UserRowProps) {
             {getUserDisplayName(u)}
             {isMe && <span className="text-zinc-600 font-normal ml-1">(sen)</span>}
           </p>
-          {u.username && <p className="text-[10px] text-zinc-700">@{u.username}</p>}
         </div>
 
         <div className="text-right shrink-0">
