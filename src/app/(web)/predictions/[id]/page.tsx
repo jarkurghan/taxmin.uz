@@ -104,7 +104,7 @@ export default function PredictionPage({ params }: Props) {
       {/* Back */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+        className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors mb-4"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="15 18 9 12 15 6" />
@@ -114,7 +114,7 @@ export default function PredictionPage({ params }: Props) {
 
       {/* Match header */}
       {match && (
-        <Link href={`/matches/${match.id}`} className="space-y-4">
+        <Link href={`/matches/${match.id}`}>
           <div
             className="rounded-2xl px-5 py-4 transition-colors hover:bg-white/[0.02]"
             style={{
