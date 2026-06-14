@@ -5,27 +5,39 @@ import { matchesAPI, predictionsAPI } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import type { Match, Prediction } from "@/types";
 
+// Polling intervallari: live=15s, scheduled=30s, finished=60s
+const POLL_INTERVALS: Record<string, number> = {
+  live: 15_000,
+  scheduled: 30_000,
+  finished: 60_000,
+};
+
 export function useMatches(status?: string) {
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setIsLoading(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setIsLoading(true);
     setError(null);
     try {
       const res = await matchesAPI.getAll({ status });
       setMatches(res.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Xato yuz berdi");
+      if (!silent) setError(err instanceof Error ? err.message : "Xato yuz berdi");
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   }, [status]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+    const pollMs = POLL_INTERVALS[status ?? ""] ?? 30_000;
+    const timer = setInterval(() => load(true), pollMs);
+    return () => clearInterval(timer);
+  }, [load, status]);
 
-  return { matches, isLoading, error, reload: load };
+  return { matches, isLoading, error, reload: () => load(false) };
 }
 
 export function useMatch(id: string) {
