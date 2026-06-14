@@ -65,19 +65,28 @@ export function getRankMedal(rank: number): string {
   return `${rank}.`;
 }
 
-// Team flag emoji by 3-letter code
+// Team flag emoji by 3-letter FIFA code
 const FLAG_MAP: Record<string, string> = {
-  USA: "🇺🇸", MEX: "🇲🇽", CAN: "🇨🇦", BRA: "🇧🇷", ARG: "🇦🇷",
+  // Shimoliy/Markaziy Amerika
+  USA: "🇺🇸", MEX: "🇲🇽", CAN: "🇨🇦", CRC: "🇨🇷", PAN: "🇵🇦",
+  JAM: "🇯🇲", HON: "🇭🇳", HTI: "🇭🇹",
+  // Janubiy Amerika
+  BRA: "🇧🇷", ARG: "🇦🇷", URU: "🇺🇾", COL: "🇨🇴", ECU: "🇪🇨",
+  CHL: "🇨🇱", PER: "🇵🇪", VEN: "🇻🇪", PAR: "🇵🇾", BOL: "🇧🇴",
+  // Yevropa
   FRA: "🇫🇷", ENG: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", GER: "🇩🇪", ESP: "🇪🇸", POR: "🇵🇹",
-  NED: "🇳🇱", BEL: "🇧🇪", ITA: "🇮🇹", URU: "🇺🇾", COL: "🇨🇴",
-  ECU: "🇪🇨", CHL: "🇨🇱", PER: "🇵🇪", VEN: "🇻🇪", PAR: "🇵🇾",
-  BOL: "🇧🇴", SUI: "🇨🇭", CRO: "🇭🇷", SRB: "🇷🇸", DEN: "🇩🇰",
-  POL: "🇵🇱", TUR: "🇹🇷", UKR: "🇺🇦", WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-  AUS: "🇦🇺", JPN: "🇯🇵", KOR: "🇰🇷", IRN: "🇮🇷", SAU: "🇸🇦",
-  QAT: "🇶🇦", MAR: "🇲🇦", SEN: "🇸🇳", GHA: "🇬🇭", CMR: "🇨🇲",
-  TUN: "🇹🇳", CIV: "🇨🇮", NGA: "🇳🇬", EGY: "🇪🇬", MLI: "🇲🇱",
-  CRC: "🇨🇷", PAN: "🇵🇦", JAM: "🇯🇲", HON: "🇭🇳",
-  UZB: "🇺🇿", CHN: "🇨🇳", IND: "🇮🇳",
+  NED: "🇳🇱", BEL: "🇧🇪", ITA: "🇮🇹", SUI: "🇨🇭", CRO: "🇭🇷",
+  SRB: "🇷🇸", DEN: "🇩🇰", POL: "🇵🇱", TUR: "🇹🇷", UKR: "🇺🇦",
+  WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", AUT: "🇦🇹", SVK: "🇸🇰", SVN: "🇸🇮",
+  GRE: "🇬🇷", ALB: "🇦🇱", HUN: "🇭🇺", ROU: "🇷🇴", CZE: "🇨🇿",
+  // Osiyo
+  JPN: "🇯🇵", KOR: "🇰🇷", IRN: "🇮🇷", SAU: "🇸🇦", QAT: "🇶🇦",
+  AUS: "🇦🇺", UZB: "🇺🇿", CHN: "🇨🇳", IND: "🇮🇳", IRQ: "🇮🇶", JOR: "🇯🇴",
+  // Afrika
+  MAR: "🇲🇦", SEN: "🇸🇳", GHA: "🇬🇭", CMR: "🇨🇲", TUN: "🇹🇳",
+  CIV: "🇨🇮", NGA: "🇳🇬", EGY: "🇪🇬", MLI: "🇲🇱", RSA: "🇿🇦", DRC: "🇨🇩",
+  // Boshqalar
+  NZL: "🇳🇿",
 };
 
 export function getTeamFlag(code: string): string {
