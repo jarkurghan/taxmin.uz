@@ -3,7 +3,7 @@
 import { useMatch, useMatchPredictions } from "@/hooks/use-matches";
 import { PredictionForm } from "@/components/prediction-form";
 import { PredictionCard } from "@/components/prediction-card";
-import { getTeamFlag, formatMatchDate, cn } from "@/lib/utils";
+import { getTeamFlag, formatMatchDate } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Prediction } from "@/types";
@@ -15,10 +15,9 @@ export function MatchDetail({ id }: { id: string }) {
 
   if (matchLoading) {
     return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-8 w-20 rounded-lg" style={{ background: "rgba(255,255,255,0.04)" }} />
-        <div className="rounded-3xl h-56" style={{ background: "rgba(255,255,255,0.04)" }} />
-        <div className="rounded-2xl h-36" style={{ background: "rgba(255,255,255,0.04)" }} />
+      <div className="space-y-4">
+        <div className="rounded-3xl h-56 animate-pulse" style={{ background: "rgba(255,255,255,0.04)" }} />
+        <div className="rounded-2xl h-36 animate-pulse" style={{ background: "rgba(255,255,255,0.04)" }} />
       </div>
     );
   }
