@@ -100,9 +100,6 @@ export default function ProfilePage() {
         {/* Info */}
         <div className="pt-[52px] pb-6 px-5 text-center">
           <h1 className="text-xl font-bold text-zinc-100">{getUserDisplayName(user)}</h1>
-          {user.username && (
-            <p className="text-sm text-zinc-600 mt-0.5">@{user.username}</p>
-          )}
 
           {/* Stats */}
           <div className="flex gap-3 mt-5">

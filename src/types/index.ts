@@ -5,7 +5,6 @@ export interface User {
   telegramId: number;
   firstName: string;
   lastName: string | null;
-  username: string | null;
   photoUrl: string | null;
   totalPoints: number;
   createdAt: string;
@@ -40,7 +39,7 @@ export interface Reaction {
   userId: string;
   emoji: string;
   createdAt: string;
-  user?: Pick<User, "id" | "firstName" | "username" | "photoUrl">;
+  user?: Pick<User, "id" | "firstName" | "photoUrl">;
 }
 
 export interface Comment {
@@ -50,7 +49,7 @@ export interface Comment {
   content: string;
   createdAt: string;
   updatedAt: string;
-  user: Pick<User, "id" | "firstName" | "username" | "photoUrl">;
+  user: Pick<User, "id" | "firstName" | "photoUrl">;
   replies?: Omit<Comment, "replies">[];
 }
 
@@ -63,7 +62,7 @@ export interface Prediction {
   points: number | null;
   createdAt: string;
   updatedAt: string;
-  user?: Pick<User, "id" | "firstName" | "lastName" | "username" | "photoUrl">;
+  user?: Pick<User, "id" | "firstName" | "lastName" | "photoUrl">;
   match?: Match;
   reactions?: Reaction[];
   comments?: Comment[];

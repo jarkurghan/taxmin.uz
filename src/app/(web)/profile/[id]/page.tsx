@@ -94,7 +94,6 @@ export default function UserProfilePage({ params }: Props) {
 
         <div className="pt-12 pb-6 px-5 text-center">
           <h1 className="text-xl font-bold text-zinc-100">{getUserDisplayName(data)}</h1>
-          {data.username && <p className="text-sm text-zinc-600 mt-0.5">@{data.username}</p>}
           <div className="mt-4">
             <p className="text-4xl font-display font-bold text-gradient-green">{data.totalPoints}</p>
             <p className="text-[10px] text-zinc-600 uppercase tracking-widest mt-1">Jami ball</p>
