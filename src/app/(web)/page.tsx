@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { MatchCard } from "@/components/match-card";
 import { useMatches } from "@/hooks/use-matches";
 import { cn } from "@/lib/utils";
@@ -13,8 +14,14 @@ const FILTERS: { label: string; value: Filter }[] = [
   { label: "Tugagan", value: "finished" },
 ];
 
-export default function HomePage() {
-  const [filter, setFilter] = useState<Filter>("scheduled");
+const VALID: Filter[] = ["scheduled", "live", "finished"];
+
+function HomePageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const raw = searchParams.get("tab");
+  const filter: Filter = VALID.includes(raw as Filter) ? (raw as Filter) : "scheduled";
+  const setFilter = (value: Filter) => router.replace(`/?tab=${value}`);
   const { matches, isLoading, error } = useMatches(filter);
 
   const grouped = matches.reduce<Record<string, typeof matches>>((acc, m) => {
@@ -134,5 +141,13 @@ export default function HomePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense>
+      <HomePageContent />
+    </Suspense>
   );
 }

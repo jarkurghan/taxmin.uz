@@ -5,14 +5,11 @@ import { PredictionForm } from "@/components/prediction-form";
 import { PredictionCard } from "@/components/prediction-card";
 import { getTeamFlag, formatMatchDate, cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Prediction } from "@/types";
 
-interface MatchDetailProps {
-  id: string;
-  backSlot?: React.ReactNode;
-}
-
-export function MatchDetail({ id, backSlot }: MatchDetailProps) {
+export function MatchDetail({ id }: { id: string }) {
+  const router = useRouter();
   const { match, isLoading: matchLoading, setMatch } = useMatch(id);
   const { predictions, isLoading: predsLoading, unauthorized, add, remove } = useMatchPredictions(id);
 
@@ -34,7 +31,16 @@ export function MatchDetail({ id, backSlot }: MatchDetailProps) {
 
   return (
     <div className="space-y-4 animate-fade-in">
-      {backSlot}
+      {/* Back */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Orqaga
+      </button>
 
       {/* Match header card */}
       <div
