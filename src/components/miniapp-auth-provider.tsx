@@ -36,24 +36,19 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
     setIsAuthenticating(true);
 
     try {
-      // 1. Mavjud tokenni tekshir (qaytuvchi foydalanuvchi — tezkor yo'l)
+      // 1. Mavjud tokenni tekshir
       await hydrate();
       if (useAuth.getState().user) return;
 
-      // 2. Telegram SDK ni tekshir
-      // Rasmiy mini app WebView'ida window.Telegram.WebApp sinxron mavjud bo'ladi.
-      // Agar yo'q bo'lsa — oddiy brauzer/IAB da ochilgan: t.me linki ga yo'naltir.
+      // 2. Telegram SDK ni tekshir (500ms kutib qayta tekshiramiz)
       let tg = getTelegramWebApp();
-
       if (!tg) {
-        // 500ms kut (ba'zi qurilmalarda biroz kechroq inject qilinadi)
         await new Promise((r) => setTimeout(r, 500));
         tg = getTelegramWebApp();
       }
 
       if (!tg) {
-        // SDK yo'q — mini app sifatida ochilmagan, botga yo'naltir
-        window.location.href = getMiniAppLink();
+        setAuthError("no_sdk");
         return;
       }
 
@@ -85,6 +80,39 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
 
   /* ── Xato ekrani ─────────────────────────────────────────────────────────── */
   if (authError) {
+    // SDK topilmagan holat — foydalanuvchi to'g'ri link orqali ochmagan
+    if (authError === "no_sdk") {
+      return (
+        <div
+          className="min-h-screen flex flex-col items-center justify-center px-6 gap-6"
+          style={{ background: "#07080d" }}
+        >
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
+            style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+          >
+            ⚽
+          </div>
+          <div className="text-center space-y-2">
+            <p className="text-lg font-display font-bold text-white uppercase tracking-wider">
+              Taxminlar Ligasi
+            </p>
+            <p className="text-xs text-zinc-600">
+              Mini appni ochish uchun quyidagi tugmani bosing
+            </p>
+          </div>
+          <a
+            href={getMiniAppLink()}
+            className="block w-full max-w-xs px-6 py-3.5 rounded-2xl text-sm font-semibold text-white text-center"
+            style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+          >
+            Telegram orqali ochish
+          </a>
+        </div>
+      );
+    }
+
+    // Boshqa xatolar (server xatosi, initData bo'sh, va h.k.)
     return (
       <div
         className="min-h-screen flex items-center justify-center px-6"
@@ -94,21 +122,13 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
           <p className="text-5xl">⚠️</p>
           <p className="text-base font-semibold text-zinc-300">Kirish muvaffaqiyatsiz</p>
           <p className="text-xs text-zinc-600 leading-relaxed">{authError}</p>
-          <div className="flex flex-col gap-2.5 pt-1">
-            <a
-              href={getMiniAppLink()}
-              className="block px-6 py-2.5 rounded-xl text-sm font-semibold text-white text-center"
-              style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
-            >
-              Mini appni ochish
-            </a>
-            <button
-              onClick={runAuth}
-              className="px-6 py-2 rounded-xl text-xs font-medium text-zinc-500 hover:text-zinc-300 transition-colors"
-            >
-              Qayta urinish
-            </button>
-          </div>
+          <button
+            onClick={runAuth}
+            className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
+            style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+          >
+            Qayta urinish
+          </button>
         </div>
       </div>
     );
