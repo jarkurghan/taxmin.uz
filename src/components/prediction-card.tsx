@@ -13,9 +13,10 @@ const EMOJIS = ["🔥", "❤️", "😲", "👏", "😢"];
 interface PredictionCardProps {
   prediction: Prediction;
   showMatch?: boolean;
+  basePath?: string;
 }
 
-export function PredictionCard({ prediction, showMatch = false }: PredictionCardProps) {
+export function PredictionCard({ prediction, showMatch = false, basePath = "" }: PredictionCardProps) {
   const { user } = useAuth();
   const [reactions, setReactions] = useState<Reaction[]>(prediction.reactions ?? []);
   const [myReaction, setMyReaction] = useState<string | null>(prediction.myReaction ?? null);
@@ -64,7 +65,7 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
     >
       {/* User row */}
       <div className="flex items-center justify-between">
-        <Link href={`/profile/${prediction.user?.id}`} className="flex items-center gap-2.5 min-w-0">
+        <Link href={`${basePath}/profile/${prediction.user?.id}`} className="flex items-center gap-2.5 min-w-0">
           {prediction.user?.photoUrl ? (
             <Image
               src={prediction.user.photoUrl}
@@ -100,7 +101,7 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
       {/* Match header */}
       {showMatch && prediction.match && (
         <Link
-          href={`/matches/${prediction.match.id}`}
+          href={`${basePath}/matches/${prediction.match.id}`}
           className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors hover:bg-white/[0.03]"
           style={{ border: "1px solid rgba(255,255,255,0.06)" }}
         >
@@ -128,7 +129,7 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
       )}
 
       {/* Score — prediction detail sahifasiga link */}
-      <Link href={`/predictions/${prediction.id}`}>
+      <Link href={`${basePath}/predictions/${prediction.id}`}>
         <div
           className="rounded-xl px-6 py-3 flex items-center justify-center gap-5 transition-colors hover:bg-black/50"
           style={{
@@ -245,7 +246,7 @@ export function PredictionCard({ prediction, showMatch = false }: PredictionCard
 
       <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
       <Link
-        href={`/predictions/${prediction.id}`}
+        href={`${basePath}/predictions/${prediction.id}`}
         className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
