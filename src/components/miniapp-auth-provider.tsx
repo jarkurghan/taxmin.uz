@@ -9,30 +9,17 @@ type TelegramWebApp = {
   initData?: string;
 };
 
-// Telegram rasmiy WebView'ida window.Telegram bir necha ms kechroq paydo bo'ladi.
-// 5 soniya ichida 200ms oraliqda kutamiz.
-function waitForTelegram(timeoutMs = 5000): Promise<TelegramWebApp> {
-  return new Promise((resolve, reject) => {
-    const deadline = Date.now() + timeoutMs;
+function getTelegramWebApp(): TelegramWebApp | null {
+  return (
+    (window as unknown as { Telegram?: { WebApp?: TelegramWebApp } })
+      ?.Telegram?.WebApp ?? null
+  );
+}
 
-    const check = () => {
-      const tg = (
-        window as unknown as { Telegram?: { WebApp?: TelegramWebApp } }
-      )?.Telegram?.WebApp;
-
-      if (tg) {
-        resolve(tg);
-        return;
-      }
-      if (Date.now() >= deadline) {
-        reject(new Error("Telegram WebApp SDK topilmadi. Mini appni Telegram bot orqali oching."));
-        return;
-      }
-      setTimeout(check, 200);
-    };
-
-    check();
-  });
+function getMiniAppLink() {
+  const bot = process.env.NEXT_PUBLIC_BOT_USERNAME ?? "taxminrobot";
+  const app = process.env.NEXT_PUBLIC_BOT_APP_SHORT ?? "taxmin";
+  return `https://t.me/${bot}/${app}`;
 }
 
 export function MiniAppAuthProvider({ children }: { children: React.ReactNode }) {
@@ -49,31 +36,43 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
     setIsAuthenticating(true);
 
     try {
-      // 1. Mavjud tokenni tekshir (tezkor yo'l)
+      // 1. Mavjud tokenni tekshir (qaytuvchi foydalanuvchi — tezkor yo'l)
       await hydrate();
       if (useAuth.getState().user) return;
 
-      // 2. Telegram SDK ni kut (rasmiy Telegram WebView kechroq inject qilishi mumkin)
-      const tg = await waitForTelegram(5000);
-      tg.ready?.();
-      tg.expand?.();
+      // 2. Telegram SDK ni tekshir
+      // Rasmiy mini app WebView'ida window.Telegram.WebApp sinxron mavjud bo'ladi.
+      // Agar yo'q bo'lsa — oddiy brauzer/IAB da ochilgan: t.me linki ga yo'naltir.
+      let tg = getTelegramWebApp();
 
-      // 3. initData mavjudligini tekshir
-      const initData = tg.initData ?? "";
-      if (!initData) {
-        setAuthError(
-          "Telegram ma'lumotlari bo'sh. Ehtimol, mini app to'g'ri konfiguratsiya qilinmagan."
-        );
+      if (!tg) {
+        // 500ms kut (ba'zi qurilmalarda biroz kechroq inject qilinadi)
+        await new Promise((r) => setTimeout(r, 500));
+        tg = getTelegramWebApp();
+      }
+
+      if (!tg) {
+        // SDK yo'q — mini app sifatida ochilmagan, botga yo'naltir
+        window.location.href = getMiniAppLink();
         return;
       }
 
-      // 4. Server orqali login
+      // 3. SDK ni tayyor holga keltir
+      tg.ready?.();
+      tg.expand?.();
+
+      // 4. initData tekshir
+      const initData = tg.initData ?? "";
+      if (!initData) {
+        setAuthError("Telegram ma'lumotlari bo'sh. Mini appni qayta oching.");
+        return;
+      }
+
+      // 5. Server orqali login
       await loginMiniApp(initData);
     } catch (err) {
       setAuthError(
-        err instanceof Error
-          ? err.message
-          : "Noma'lum xato yuz berdi. Qayta urinib ko'ring."
+        err instanceof Error ? err.message : "Xato yuz berdi. Qayta urinib ko'ring."
       );
     } finally {
       setIsAuthenticating(false);
@@ -86,7 +85,6 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
 
   /* ── Xato ekrani ─────────────────────────────────────────────────────────── */
   if (authError) {
-    const botUsername = process.env.NEXT_PUBLIC_BOT_USERNAME ?? "taxminrobot";
     return (
       <div
         className="min-h-screen flex items-center justify-center px-6"
@@ -98,11 +96,11 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
           <p className="text-xs text-zinc-600 leading-relaxed">{authError}</p>
           <div className="flex flex-col gap-2.5 pt-1">
             <a
-              href={`https://t.me/${botUsername}`}
-              className="block px-6 py-2.5 rounded-xl text-sm font-semibold text-white text-center transition-opacity hover:opacity-80 active:scale-95"
+              href={getMiniAppLink()}
+              className="block px-6 py-2.5 rounded-xl text-sm font-semibold text-white text-center"
               style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
             >
-              Botni ochish
+              Mini appni ochish
             </a>
             <button
               onClick={runAuth}
