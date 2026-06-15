@@ -86,6 +86,7 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
 
   /* ── Xato ekrani ─────────────────────────────────────────────────────────── */
   if (authError) {
+    const botUsername = process.env.NEXT_PUBLIC_BOT_USERNAME ?? "taxminrobot";
     return (
       <div
         className="min-h-screen flex items-center justify-center px-6"
@@ -95,13 +96,21 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
           <p className="text-5xl">⚠️</p>
           <p className="text-base font-semibold text-zinc-300">Kirish muvaffaqiyatsiz</p>
           <p className="text-xs text-zinc-600 leading-relaxed">{authError}</p>
-          <button
-            onClick={runAuth}
-            className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-80 active:scale-95"
-            style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
-          >
-            Qayta urinish
-          </button>
+          <div className="flex flex-col gap-2.5 pt-1">
+            <a
+              href={`https://t.me/${botUsername}`}
+              className="block px-6 py-2.5 rounded-xl text-sm font-semibold text-white text-center transition-opacity hover:opacity-80 active:scale-95"
+              style={{ background: "linear-gradient(135deg, #22c55e, #15803d)" }}
+            >
+              Botni ochish
+            </a>
+            <button
+              onClick={runAuth}
+              className="px-6 py-2 rounded-xl text-xs font-medium text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              Qayta urinish
+            </button>
+          </div>
         </div>
       </div>
     );
