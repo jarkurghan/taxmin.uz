@@ -23,9 +23,7 @@ function getMiniAppLink() {
 }
 
 export function MiniAppAuthProvider({ children }: { children: React.ReactNode }) {
-  const hydrate = useAuth((s) => s.hydrate);
   const loginMiniApp = useAuth((s) => s.loginMiniApp);
-  const isHydrated = useAuth((s) => s.isHydrated);
   const user = useAuth((s) => s.user);
 
   const [authError, setAuthError] = useState<string | null>(null);
@@ -36,11 +34,7 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
     setIsAuthenticating(true);
 
     try {
-      // 1. Mavjud tokenni tekshir
-      await hydrate();
-      if (useAuth.getState().user) return;
-
-      // 2. Telegram SDK ni tekshir (500ms kutib qayta tekshiramiz)
+      // 1. Telegram SDK ni tekshir (500ms kutib qayta tekshiramiz)
       let tg = getTelegramWebApp();
       if (!tg) {
         await new Promise((r) => setTimeout(r, 500));
@@ -52,18 +46,19 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
         return;
       }
 
-      // 3. SDK ni tayyor holga keltir
+      // 2. SDK ni tayyor holga keltir
       tg.ready?.();
       tg.expand?.();
 
-      // 4. initData tekshir
+      // 3. initData tekshir
       const initData = tg.initData ?? "";
       if (!initData) {
         setAuthError("Telegram ma'lumotlari bo'sh. Mini appni qayta oching.");
         return;
       }
 
-      // 5. Server orqali login
+      // 4. Har doim initData orqali login — bu hozirgi Telegram foydalanuvchisining
+      //    ground truth ma'lumoti, localStorage tokeniga ishonmaslik kerak
       await loginMiniApp(initData);
     } catch (err) {
       setAuthError(
@@ -72,7 +67,7 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
     } finally {
       setIsAuthenticating(false);
     }
-  }, [hydrate, loginMiniApp]);
+  }, [loginMiniApp]);
 
   useEffect(() => {
     runAuth();
@@ -135,7 +130,7 @@ export function MiniAppAuthProvider({ children }: { children: React.ReactNode })
   }
 
   /* ── Yuklash ekrani ───────────────────────────────────────────────────────── */
-  if (!isHydrated || isAuthenticating || !user) {
+  if (isAuthenticating || !user) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
