@@ -54,7 +54,7 @@ export const useAuth = create<AuthStore>((set, get) => ({
     try {
       const { token, user } = await authAPI.loginMiniApp(initData);
       localStorage.setItem("tl_token", token);
-      set({ token, user, isLoading: false });
+      set({ token, user, isLoading: false, isHydrated: true });
     } catch (err) {
       set({ isLoading: false });
       throw err;
