@@ -7,7 +7,7 @@ export default function MiniAppLayout({ children }: { children: React.ReactNode 
     <MiniAppAuthProvider>
       <div className="min-h-screen pb-20">
         <MiniAppHeader />
-        <main className="max-w-2xl mx-auto px-4 py-5">{children}</main>
+        <main className="max-w-2xl mx-auto px-1 sm:px-4 py-1 sm:py-5">{children}</main>
         <MiniAppNavBar />
       </div>
     </MiniAppAuthProvider>
