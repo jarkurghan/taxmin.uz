@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
+import { Tashrif } from "tashrif/react";
 import Script from "next/script";
 import "./globals.css";
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://telegram.org/js/telegram-web-app.js"
           strategy="beforeInteractive"
         />
+        <Tashrif clientId={process.env.NEXT_PUBLIC_TASHRIF_CLIENT_ID!} />
         {children}
       </body>
     </html>
